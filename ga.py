@@ -452,16 +452,13 @@ def fix_flag(path):
     height = len(lines)
     width = len(lines[0]) if lines else 0
 
-    # Remove all 'f' and 'v'
     lines = [line.replace('f', '-').replace('v', '-') for line in lines]
 
-    # Set flagpole 'v' at row 7 (3 tiles from the end)
     if height > 7 and width >= 4:
         line = list(lines[7])
         line[-4] = 'v'
         lines[7] = ''.join(line)
 
-    # Set flags 'f' in rows 8 to 13 (inclusive)
     for row in range(8, 14):
         if row < height and width >= 4:
             line =  list(lines[row])
