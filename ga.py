@@ -299,11 +299,14 @@ class Individual_DE(object):
                 elif de_type == "3_coin":
                     y = de[2]
                     base[y][x] = "o"
+                    
                 elif de_type == "7_pipe":
-                    h = de[2]
+                    h = min(de[2], 4)  # Limit pipe height to max 4
                     base[height - h - 1][x] = "T"
                     for y in range(height - h, height):
-                        base[y][x] = "|"
+                        if y >= 8:  # leave at least rows 7 and above clear for jumping
+                            base[y][x] = "|"
+
                 elif de_type == "0_hole":
                     w = de[2]
                     for x2 in range(w):
@@ -449,13 +452,19 @@ def fix_flag(path):
     height = len(lines)
     width = len(lines[0]) if lines else 0
 
-    # Remove all 'f's
-    lines = [line.replace('f', '-') for line in lines]
+    # Remove all 'f' and 'v'
+    lines = [line.replace('f', '-').replace('v', '-') for line in lines]
 
-    # Set flag in rows 8 to 13 (inclusive)
+    # Set flagpole 'v' at row 7 (3 tiles from the end)
+    if height > 7 and width >= 4:
+        line = list(lines[7])
+        line[-4] = 'v'
+        lines[7] = ''.join(line)
+
+    # Set flags 'f' in rows 8 to 13 (inclusive)
     for row in range(8, 14):
         if row < height and width >= 4:
-            line = list(lines[row])
+            line =  list(lines[row])
             line[-4] = 'f'
             lines[row] = ''.join(line)
 
